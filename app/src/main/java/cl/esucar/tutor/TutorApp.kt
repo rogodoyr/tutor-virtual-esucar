@@ -7,6 +7,7 @@ import cl.esucar.tutor.data.local.TutorDatabase
 import cl.esucar.tutor.data.repository.EntregableRepository
 import cl.esucar.tutor.data.repository.FaqRepository
 import cl.esucar.tutor.data.repository.GuiaRepository
+import cl.esucar.tutor.data.repository.UsuarioRepository
 import cl.esucar.tutor.notifications.NotificacionHelper
 
 /**
@@ -24,6 +25,10 @@ class TutorApp : Application() {
     }
 
     val perfilDataStore: PerfilDataStore by lazy { PerfilDataStore(this) }
+
+    val usuarioRepository: UsuarioRepository by lazy {
+        UsuarioRepository(database.usuarioDao())
+    }
 
     val guiaRepository: GuiaRepository by lazy { GuiaRepository() }
 

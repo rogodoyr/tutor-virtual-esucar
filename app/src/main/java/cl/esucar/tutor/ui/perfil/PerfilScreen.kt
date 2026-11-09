@@ -24,11 +24,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -62,6 +64,7 @@ import java.io.File
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PerfilScreen(
+    onCerrarSesion: () -> Unit = {},
     viewModel: PerfilViewModel = viewModel(factory = PerfilViewModel.Factory)
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
@@ -222,6 +225,18 @@ fun PerfilScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Guardar perfil")
+            }
+
+            OutlinedButton(
+                onClick = {
+                    viewModel.cerrarSesion()
+                    onCerrarSesion()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
+                Spacer(Modifier.size(8.dp))
+                Text("Cerrar sesion")
             }
 
             Card(modifier = Modifier.fillMaxWidth()) {

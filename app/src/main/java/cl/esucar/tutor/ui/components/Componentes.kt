@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import cl.esucar.tutor.domain.model.EstadoEntregable
 
@@ -57,7 +58,8 @@ fun CampoValidado(
     iconoFinal: ImageVector? = null,
     onIconoFinalClick: (() -> Unit)? = null,
     unaLinea: Boolean = true,
-    habilitado: Boolean = true
+    habilitado: Boolean = true,
+    transformacionVisual: VisualTransformation = VisualTransformation.None
 ) {
     val iconoFinalComposable: (@Composable () -> Unit)? = when {
         error != null -> {
@@ -88,6 +90,7 @@ fun CampoValidado(
         isError = error != null,
         singleLine = unaLinea,
         enabled = habilitado,
+        visualTransformation = transformacionVisual,
         leadingIcon = if (iconoInicial != null) {
             { Icon(iconoInicial, contentDescription = null) }
         } else {

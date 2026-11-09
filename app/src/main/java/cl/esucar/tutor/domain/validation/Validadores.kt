@@ -81,6 +81,69 @@ object ValidadorEntregable {
 }
 
 /**
+ * Validacion del formulario de acceso (login).
+ */
+object ValidadorLogin {
+
+    data class Errores(
+        val email: String? = null,
+        val password: String? = null
+    ) {
+        val hayErrores: Boolean get() = email != null || password != null
+    }
+
+    fun validar(email: String, password: String): Errores = Errores(
+        email = Validadores.email(email),
+        password = Validadores.requerido(password, "Contrasena")
+    )
+}
+
+/**
+ * Validacion del formulario de registro de usuarios.
+ */
+object ValidadorRegistro {
+
+    data class Errores(
+        val nombre: String? = null,
+        val email: String? = null,
+        val password: String? = null,
+        val confirmacion: String? = null,
+        val rol: String? = null
+    ) {
+        val hayErrores: Boolean
+            get() = nombre != null || email != null || password != null ||
+                confirmacion != null || rol != null
+    }
+
+    fun validar(
+        nombre: String,
+        email: String,
+        password: String,
+        confirmacion: String,
+        rol: String
+    ): Errores {
+        val errorPassword = Validadores.requerido(password, "Contrasena")
+            ?: Validadores.longitudMinima(password, 6, "La contrasena")
+
+        val errorConfirmacion = when {
+            confirmacion.isBlank() -> "Debe confirmar la contrasena"
+            confirmacion != password -> "Las contrasenas no coinciden"
+            else -> null
+        }
+
+        return Errores(
+            nombre = Validadores.requerido(nombre, "Nombre")
+                ?: Validadores.soloLetras(nombre, "El nombre")
+                ?: Validadores.longitudMinima(nombre, 3, "El nombre"),
+            email = Validadores.email(email),
+            password = errorPassword,
+            confirmacion = errorConfirmacion,
+            rol = Validadores.requerido(rol, "Perfil")
+        )
+    }
+}
+
+/**
  * Validacion integral del formulario de perfil del estudiante.
  */
 object ValidadorPerfil {

@@ -115,6 +115,11 @@ class PerfilViewModel(
         viewModelScope.launch { perfilDataStore.guardarRecordatorios(activo) }
     }
 
+    /** Cierra la sesion activa (la app vuelve a la pantalla de acceso). */
+    fun cerrarSesion() {
+        viewModelScope.launch { perfilDataStore.cerrarSesion() }
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

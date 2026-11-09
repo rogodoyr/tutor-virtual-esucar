@@ -26,6 +26,9 @@ class PerfilDataStore(private val context: Context) {
         val FOTO_RUTA = stringPreferencesKey("foto_ruta")
         val MODO_OSCURO = booleanPreferencesKey("modo_oscuro")
         val RECORDATORIOS = booleanPreferencesKey("recordatorios")
+        val SESION_EMAIL = stringPreferencesKey("sesion_email")
+        val SESION_NOMBRE = stringPreferencesKey("sesion_nombre")
+        val SESION_ROL = stringPreferencesKey("sesion_rol")
     }
 
     val perfil: Flow<Perfil> = context.dataStore.data.map { prefs ->
@@ -43,6 +46,31 @@ class PerfilDataStore(private val context: Context) {
             modoOscuro = prefs[Claves.MODO_OSCURO] ?: false,
             recordatoriosActivos = prefs[Claves.RECORDATORIOS] ?: true
         )
+    }
+
+    /** Sesion activa: email vacio = sin sesion iniciada. */
+    val sesion: Flow<Triple<String, String, String>> = context.dataStore.data.map { prefs ->
+        Triple(
+            prefs[Claves.SESION_EMAIL] ?: "",
+            prefs[Claves.SESION_NOMBRE] ?: "",
+            prefs[Claves.SESION_ROL] ?: ""
+        )
+    }
+
+    suspend fun iniciarSesion(email: String, nombre: String, rol: String) {
+        context.dataStore.edit { prefs ->
+            prefs[Claves.SESION_EMAIL] = email
+            prefs[Claves.SESION_NOMBRE] = nombre
+            prefs[Claves.SESION_ROL] = rol
+        }
+    }
+
+    suspend fun cerrarSesion() {
+        context.dataStore.edit { prefs ->
+            prefs.remove(Claves.SESION_EMAIL)
+            prefs.remove(Claves.SESION_NOMBRE)
+            prefs.remove(Claves.SESION_ROL)
+        }
     }
 
     suspend fun guardarPerfil(perfil: Perfil) {

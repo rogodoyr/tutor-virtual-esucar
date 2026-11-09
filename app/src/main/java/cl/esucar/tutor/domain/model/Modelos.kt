@@ -56,3 +56,21 @@ data class Ajustes(
     val modoOscuro: Boolean = false,
     val recordatoriosActivos: Boolean = true
 )
+
+/** Perfiles de usuario definidos en el caso ESUCAR. */
+enum class Rol(val etiqueta: String) {
+    ESTUDIANTE("Estudiante de trabajo de titulo"),
+    PROFESOR("Profesor guia");
+
+    companion object {
+        fun desdeTexto(valor: String): Rol =
+            entries.firstOrNull { it.name == valor } ?: ESTUDIANTE
+    }
+}
+
+data class Usuario(
+    val id: Long = 0,
+    val nombre: String,
+    val email: String,
+    val rol: Rol = Rol.ESTUDIANTE
+)

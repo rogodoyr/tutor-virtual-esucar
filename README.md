@@ -7,8 +7,11 @@ Escuela de Suboficiales de Carabineros de Chile (ESUCAR).
 
 ## Estudiantes
 
-- Integrante 1: *completar nombre y apellido*
-- Integrante 2: *completar nombre y apellido*
+- Rodrigo Godoy
+- Axel Brogi
+
+**Asignatura:** DSY1105 - Desarrollo de Aplicaciones Moviles_002V (Duoc UC)
+**Profesor:** Juan Guillermo Azocar Malverde
 
 ## Problema que resuelve
 
@@ -21,6 +24,7 @@ que guia paso a paso el proceso y reduce las consultas repetitivas a los profeso
 
 | Funcionalidad | Implementacion |
 |---|---|
+| Acceso institucional (login) | Login y registro validados con perfiles (estudiante / profesor guia), contrasenas cifradas (SHA-256 + salt) y sesion persistida |
 | Diseno visual Material 3 | Tema claro/oscuro con paleta institucional, NavigationBar, Cards, TopAppBar |
 | Navegacion funcional | Navigation Compose con 7 pantallas y transiciones animadas |
 | Formularios validados | Formulario de entregable y formulario de perfil, con iconos, mensajes de error por campo y retroalimentacion animada |
@@ -55,6 +59,14 @@ app/src/main/java/cl/esucar/tutor/
     └── perfil/                  Perfil, camara y ajustes
 ```
 
+## Acceso
+
+La app es institucional (ESUCAR): primero se debe iniciar sesion o registrarse
+con el perfil correspondiente (estudiante de trabajo de titulo o profesor guia).
+Para pruebas existe la cuenta de demostracion `demo@esucar.cl` / `demo1234`
+(boton "Ingresar con cuenta de demostracion"). La sesion persiste en el
+dispositivo y se cierra desde Perfil > "Cerrar sesion".
+
 ## Como ejecutar
 
 1. Abrir el proyecto en **Android Studio** (File > Open > carpeta del repositorio).
@@ -67,7 +79,8 @@ Requisitos: Android Studio con JDK 17+, Android SDK 37, Gradle 9.6 (wrapper incl
 ## Persistencia local
 
 - **Room** (`tutor_esucar.db`): tabla `entregables` con titulo, etapa, descripcion,
-  fecha limite, estado (Por iniciar / En desarrollo / Enviado / Aprobado) y recordatorio.
+  fecha limite, estado (Por iniciar / En desarrollo / Enviado / Aprobado) y recordatorio;
+  tabla `usuarios` con nombre, correo unico, hash de contrasena (SHA-256 + salt) y rol.
 - **DataStore** (`perfil_ajustes`): nombre, correo, carrera, semestre, ruta de la foto,
   modo oscuro y preferencia de notificaciones.
 

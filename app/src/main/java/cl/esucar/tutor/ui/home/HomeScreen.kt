@@ -20,7 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -140,7 +140,7 @@ fun HomeScreen(
                 TarjetaAccion(
                     titulo = "Guia metodologica",
                     descripcion = "Etapa a etapa, con formato y criterios",
-                    icono = Icons.Default.List,
+                    icono = Icons.AutoMirrored.Filled.List,
                     onClick = onIrAGuia,
                     modifier = Modifier.fillMaxWidth()
                 )
