@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Tutor Virtual ESUCAR</string>
+    <string name="canal_recordatorios">Recordatorios de entregas</string>
+    <string name="canal_recordatorios_desc">Alertas de las fechas limite de los hitos de Trabajo de Titulo</string>
+</resources>
