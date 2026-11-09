@@ -57,6 +57,45 @@ data class Ajustes(
     val recordatoriosActivos: Boolean = true
 )
 
+/**
+ * Catalogos predefinidos de la institucion: la app es de uso institucional,
+ * por lo que los datos se eligen de listas cerradas y no se escriben libres.
+ */
+object Catalogos {
+
+    /** Programas academicos disponibles (ESUCAR). */
+    val CARRERAS = listOf(
+        "Administracion y Gestion en Seguridad Publica",
+        "Administracion Publica",
+        "Seguridad Publica"
+    )
+
+    /** Semestres academicos. */
+    val SEMESTRES = (1..12).map { it.toString() }
+
+    /** Titulos predefinidos de los entregables (hitos de Trabajo de Titulo). */
+    val ENTREGABLES = listOf(
+        "Avance 1 - Planteamiento del problema",
+        "Avance 2 - Marco teorico",
+        "Avance 3 - Metodologia",
+        "Avance 4 - Recogida de informacion",
+        "Avance 5 - Analisis de resultados",
+        "Avance 6 - Conclusiones y recomendaciones",
+        "Entrega de formato y normas APA",
+        "Entrega final - Trabajo de Titulo"
+    )
+
+    /** Items concretos que debe incluir un entregable (seleccion multiple). */
+    val ITEMS_ENTREGABLE = listOf(
+        "Portada institucional",
+        "Indice",
+        "Contenido del capitulo",
+        "Referencias APA 7",
+        "Anexos",
+        "PDF segun pauta de evaluacion"
+    )
+}
+
 /** Perfiles de usuario definidos en el caso ESUCAR. */
 enum class Rol(val etiqueta: String) {
     ESTUDIANTE("Estudiante de trabajo de titulo"),

@@ -36,6 +36,69 @@ class ValidadoresTest {
         assertNull(Validadores.email("estudiante@esucar.cl"))
     }
 
+    // ---------- Correo institucional ----------
+
+    @Test
+    fun `correo institucional esucar es valido`() {
+        assertNull(Validadores.emailInstitucional("sadgzsgr@esucar.cl"))
+    }
+
+    @Test
+    fun `correo de otro dominio produce error`() {
+        assertNotNull(Validadores.emailInstitucional("ana@duocuc.cl"))
+    }
+
+    @Test
+    fun `correo institucional sin formato produce error`() {
+        assertNotNull(Validadores.emailInstitucional("xdfhb"))
+    }
+
+    // ---------- Contrasena segura ----------
+
+    @Test
+    fun `contrasena segura es valida`() {
+        assertNull(Validadores.contrasenaSegura("clave#123"))
+    }
+
+    @Test
+    fun `contrasena sin caracter especial produce error`() {
+        assertNotNull(Validadores.contrasenaSegura("clave123"))
+    }
+
+    @Test
+    fun `contrasena sin numero produce error`() {
+        assertNotNull(Validadores.contrasenaSegura("clave#abc"))
+    }
+
+    @Test
+    fun `contrasena sin letra produce error`() {
+        assertNotNull(Validadores.contrasenaSegura("1234#56"))
+    }
+
+    @Test
+    fun `contrasena corta produce error`() {
+        assertNotNull(Validadores.contrasenaSegura("ab#1"))
+    }
+
+    // ---------- Nombre completo ----------
+
+    @Test
+    fun `nombre y apellido es valido`() {
+        assertNull(Validadores.nombreCompleto("Ana Perez"))
+    }
+
+    @Test
+    fun `nombre sin apellido produce error`() {
+        assertNotNull(Validadores.nombreCompleto("Ana"))
+    }
+
+    @Test
+    fun `nombre con numeros produce error`() {
+        assertNotNull(Validadores.nombreCompleto("Ana123 Perez"))
+    }
+
+    // ---------- Otros ----------
+
     @Test
     fun `semestre fuera de rango produce error`() {
         assertNotNull(Validadores.semestre("15"))
@@ -63,9 +126,9 @@ class ValidadoresTest {
     @Test
     fun `formulario de entregable completo y valido no tiene errores`() {
         val errores = ValidadorEntregable.validar(
-            titulo = "Entrega capitulo 1",
+            titulo = "Avance 1 - Planteamiento del problema",
             etapa = "1. Planteamiento del problema",
-            descripcion = "Entrega del planteamiento del problema completo",
+            descripcion = "Debe incluir: Portada institucional, Indice",
             fechaLimite = System.currentTimeMillis() + 86_400_000L
         )
         assertFalse(errores.hayErrores)
@@ -103,19 +166,30 @@ class ValidadoresTest {
     fun `perfil completo y valido no tiene errores`() {
         val errores = ValidadorPerfil.validar(
             nombre = "Ana Perez",
-            email = "ana@duocuc.cl",
-            carrera = "Analisis de Sistemas",
+            email = "ana@esucar.cl",
+            carrera = "Administracion y Gestion en Seguridad Publica",
             semestre = "6"
         )
         assertFalse(errores.hayErrores)
     }
 
     @Test
-    fun `nombre con numeros produce error`() {
+    fun `perfil con correo no institucional produce error`() {
         val errores = ValidadorPerfil.validar(
-            nombre = "Ana123",
+            nombre = "Ana Perez",
             email = "ana@duocuc.cl",
-            carrera = "Analisis de Sistemas",
+            carrera = "Administracion y Gestion en Seguridad Publica",
+            semestre = "6"
+        )
+        assertNotNull(errores.email)
+    }
+
+    @Test
+    fun `nombre con numeros produce error en perfil`() {
+        val errores = ValidadorPerfil.validar(
+            nombre = "Ana123 Perez",
+            email = "ana@esucar.cl",
+            carrera = "Administracion y Gestion en Seguridad Publica",
             semestre = "6"
         )
         assertNotNull(errores.nombre)

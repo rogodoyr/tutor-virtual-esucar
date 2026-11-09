@@ -117,7 +117,7 @@ fun RegistroScreen(
             CampoValidado(
                 valor = estado.password,
                 onValorChange = viewModel::onRegistroPasswordChange,
-                etiqueta = "Contrasena (minimo 6 caracteres)",
+                etiqueta = "Contrasena (min. 6: letra, numero y caracter especial)",
                 error = estado.errores.password,
                 iconoInicial = Icons.Default.Lock,
                 transformacionVisual = PasswordVisualTransformation()

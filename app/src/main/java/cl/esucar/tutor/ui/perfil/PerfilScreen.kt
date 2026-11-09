@@ -58,7 +58,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import cl.esucar.tutor.domain.model.Catalogos
 import cl.esucar.tutor.ui.components.CampoValidado
+import cl.esucar.tutor.ui.components.DesplegableCampo
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -204,18 +206,20 @@ fun PerfilScreen(
                 iconoInicial = Icons.Default.Email
             )
 
-            CampoValidado(
+            DesplegableCampo(
                 valor = estado.carrera,
-                onValorChange = viewModel::onCarreraChange,
+                onSeleccion = viewModel::onCarreraChange,
                 etiqueta = "Carrera / programa",
+                opciones = Catalogos.CARRERAS,
                 error = estado.errores.carrera,
                 iconoInicial = Icons.Default.Face
             )
 
-            CampoValidado(
+            DesplegableCampo(
                 valor = estado.semestre,
-                onValorChange = viewModel::onSemestreChange,
-                etiqueta = "Semestre (1 al 12)",
+                onSeleccion = viewModel::onSemestreChange,
+                etiqueta = "Semestre",
+                opciones = Catalogos.SEMESTRES,
                 error = estado.errores.semestre,
                 iconoInicial = Icons.Default.Settings
             )

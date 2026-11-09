@@ -29,6 +29,7 @@ data class EntregableFormState(
     val titulo: String = "",
     val etapa: String = "",
     val descripcion: String = "",
+    val itemsSeleccionados: Set<String> = emptySet(),
     val fechaMillis: Long? = null,
     val estado: EstadoEntregable = EstadoEntregable.POR_INICIAR,
     val recordatorioActivo: Boolean = true,
@@ -50,7 +51,28 @@ class EntregableFormViewModel(
 
     fun onTituloChange(valor: String) = actualizar { it.copy(titulo = valor) }
     fun onEtapaChange(valor: String) = actualizar { it.copy(etapa = valor) }
-    fun onDescripcionChange(valor: String) = actualizar { it.copy(descripcion = valor) }
+
+    /**
+     * La descripcion no se escribe libre: se arma con los items concretos
+     * que el estudiante marca (uso institucional, con detalles verificables).
+     */
+    fun onItemToggle(item: String) {
+        actualizar { estado ->
+            val nuevos = if (item in estado.itemsSeleccionados) {
+                estado.itemsSeleccionados - item
+            } else {
+                estado.itemsSeleccionados + item
+            }
+            val ordenados = cl.esucar.tutor.domain.model.Catalogos.ITEMS_ENTREGABLE
+                .filter { it in nuevos }
+            val descripcion = if (ordenados.isEmpty()) {
+                ""
+            } else {
+                "Debe incluir: " + ordenados.joinToString(", ")
+            }
+            estado.copy(itemsSeleccionados = nuevos, descripcion = descripcion)
+        }
+    }
     /**
      * Recibe la fecha del DatePicker (medianoche UTC) y la normaliza al
      * inicio del dia local, para que la validacion compare dias y no horas.

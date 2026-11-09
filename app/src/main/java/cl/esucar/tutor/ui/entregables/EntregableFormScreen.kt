@@ -1,12 +1,20 @@
 package cl.esucar.tutor.ui.entregables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -16,10 +24,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -50,13 +60,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.esucar.tutor.TutorApp
+import cl.esucar.tutor.domain.model.Catalogos
 import cl.esucar.tutor.domain.model.EstadoEntregable
 import cl.esucar.tutor.ui.components.CampoValidado
+import cl.esucar.tutor.ui.components.DesplegableCampo
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun EntregableFormScreen(
     onVolver: () -> Unit,
@@ -97,10 +109,11 @@ fun EntregableFormScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            CampoValidado(
+            DesplegableCampo(
                 valor = estado.titulo,
-                onValorChange = viewModel::onTituloChange,
+                onSeleccion = viewModel::onTituloChange,
                 etiqueta = "Titulo del entregable",
+                opciones = Catalogos.ENTREGABLES,
                 error = estado.errores.titulo,
                 iconoInicial = Icons.Default.Edit
             )
@@ -112,15 +125,49 @@ fun EntregableFormScreen(
                 onSeleccion = viewModel::onEtapaChange
             )
 
-            CampoValidado(
-                valor = estado.descripcion,
-                onValorChange = viewModel::onDescripcionChange,
-                etiqueta = "Descripcion (que debes entregar)",
-                error = estado.errores.descripcion,
-                iconoInicial = Icons.Default.Info,
-                unaLinea = false,
-                modifier = Modifier.height(140.dp)
-            )
+            Column {
+                Text(
+                    "Items que debe incluir el entregable",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "Selecciona al menos uno. La descripcion se arma con los items marcados.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(8.dp))
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Catalogos.ITEMS_ENTREGABLE.forEach { item ->
+                        FilterChip(
+                            selected = item in estado.itemsSeleccionados,
+                            onClick = { viewModel.onItemToggle(item) },
+                            label = { Text(item) }
+                        )
+                    }
+                }
+                AnimatedVisibility(
+                    visible = estado.errores.descripcion != null,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Warning,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp),
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            estado.errores.descripcion ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+            }
 
             OutlinedTextField(
                 value = estado.fechaMillis?.let { formatoFecha.format(Date(it)) } ?: "",

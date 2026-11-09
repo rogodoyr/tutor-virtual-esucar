@@ -24,10 +24,10 @@ que guia paso a paso el proceso y reduce las consultas repetitivas a los profeso
 
 | Funcionalidad | Implementacion |
 |---|---|
-| Acceso institucional (login) | Login y registro validados con perfiles (estudiante / profesor guia), contrasenas cifradas (SHA-256 + salt) y sesion persistida |
+| Acceso institucional (login) | Login y registro validados con perfiles (estudiante / profesor guia), correos solo @esucar.cl, contrasena segura (letra + numero + caracter especial), cifrada SHA-256 + salt, y sesion persistida |
 | Diseno visual Material 3 | Tema claro/oscuro con paleta institucional, NavigationBar, Cards, TopAppBar |
 | Navegacion funcional | Navigation Compose con 7 pantallas y transiciones animadas |
-| Formularios validados | Formulario de entregable y formulario de perfil, con iconos, mensajes de error por campo y retroalimentacion animada |
+| Formularios validados | Formulario de entregable y formulario de perfil, con iconos, mensajes de error por campo y retroalimentacion animada. Datos institucionales con opciones predefinidas (carrera, semestre, titulo del entregable) e items concretos de descripcion por seleccion multiple |
 | Validaciones desacopladas | Logica centralizada en `domain/validation` (Validadores, ValidadorEntregable, ValidadorPerfil), probada con JUnit |
 | Gestion de estado | MVVM: ViewModels + StateFlow + repositorios |
 | Almacenamiento local | Room (entregables) + DataStore (perfil y ajustes), funcionamiento sin conexion |

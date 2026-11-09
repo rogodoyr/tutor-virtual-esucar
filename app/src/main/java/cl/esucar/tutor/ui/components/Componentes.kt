@@ -24,6 +24,11 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +37,9 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -171,6 +178,66 @@ fun BarraProgresoAnimada(progreso: Float, modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.primary,
             trackColor = MaterialTheme.colorScheme.primaryContainer
         )
+    }
+}
+
+/**
+ * Campo de seleccion con opciones predefinidas (uso institucional:
+ * los datos se eligen de listas cerradas y no se escriben libres).
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DesplegableCampo(
+    valor: String,
+    onSeleccion: (String) -> Unit,
+    etiqueta: String,
+    opciones: List<String>,
+    error: String?,
+    modifier: Modifier = Modifier,
+    iconoInicial: ImageVector? = null
+) {
+    var expandido by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expandido,
+        onExpandedChange = { expandido = it },
+        modifier = modifier
+    ) {
+        OutlinedTextField(
+            value = valor,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(etiqueta) },
+            isError = error != null,
+            leadingIcon = if (iconoInicial != null) {
+                { Icon(iconoInicial, contentDescription = null) }
+            } else {
+                null
+            },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandido) },
+            supportingText = {
+                if (error != null) {
+                    Text(error, color = MaterialTheme.colorScheme.error)
+                }
+            },
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth()
+        )
+        ExposedDropdownMenu(
+            expanded = expandido,
+            onDismissRequest = { expandido = false }
+        ) {
+            opciones.forEach { opcion ->
+                DropdownMenuItem(
+                    text = { Text(opcion) },
+                    onClick = {
+                        onSeleccion(opcion)
+                        expandido = false
+                    }
+                )
+            }
+        }
     }
 }
 

@@ -24,6 +24,40 @@ object Validadores {
         else -> null
     }
 
+    /**
+     * La app es de uso institucional: solo se aceptan correos @esucar.cl.
+     */
+    fun emailInstitucional(valor: String): String? =
+        email(valor)
+            ?: if (!valor.trim().endsWith("@esucar.cl", ignoreCase = true)) {
+                "Solo se aceptan correos institucionales @esucar.cl (ej: nombre@esucar.cl)"
+            } else {
+                null
+            }
+
+    /**
+     * Politica de contrasenas: minimo 6 caracteres e incluye al menos
+     * una letra, un numero y un caracter especial.
+     */
+    fun contrasenaSegura(valor: String): String? = when {
+        valor.isBlank() -> "La contrasena es obligatoria"
+        valor.length < 6 -> "La contrasena debe tener al menos 6 caracteres"
+        !valor.any { it.isLetter() } -> "Debe incluir al menos una letra"
+        !valor.any { it.isDigit() } -> "Debe incluir al menos un numero"
+        !valor.any { !it.isLetterOrDigit() } -> "Debe incluir al menos un caracter especial (ej: !#%&*)"
+        else -> null
+    }
+
+    /** Nombre y apellido: solo letras y dos palabras como minimo. */
+    fun nombreCompleto(valor: String): String? =
+        requerido(valor, "Nombre")
+            ?: soloLetras(valor, "El nombre")
+            ?: if (valor.trim().split(Regex("\\s+")).size < 2) {
+                "Ingrese nombre y apellido"
+            } else {
+                null
+            }
+
     fun soloLetras(valor: String, campo: String): String? =
         if (!REGEX_SOLO_LETRAS.matches(valor.trim())) "$campo solo debe contener letras" else null
 
@@ -93,7 +127,7 @@ object ValidadorLogin {
     }
 
     fun validar(email: String, password: String): Errores = Errores(
-        email = Validadores.email(email),
+        email = Validadores.emailInstitucional(email),
         password = Validadores.requerido(password, "Contrasena")
     )
 }
@@ -122,8 +156,7 @@ object ValidadorRegistro {
         confirmacion: String,
         rol: String
     ): Errores {
-        val errorPassword = Validadores.requerido(password, "Contrasena")
-            ?: Validadores.longitudMinima(password, 6, "La contrasena")
+        val errorPassword = Validadores.contrasenaSegura(password)
 
         val errorConfirmacion = when {
             confirmacion.isBlank() -> "Debe confirmar la contrasena"
@@ -132,10 +165,8 @@ object ValidadorRegistro {
         }
 
         return Errores(
-            nombre = Validadores.requerido(nombre, "Nombre")
-                ?: Validadores.soloLetras(nombre, "El nombre")
-                ?: Validadores.longitudMinima(nombre, 3, "El nombre"),
-            email = Validadores.email(email),
+            nombre = Validadores.nombreCompleto(nombre),
+            email = Validadores.emailInstitucional(email),
             password = errorPassword,
             confirmacion = errorConfirmacion,
             rol = Validadores.requerido(rol, "Perfil")
@@ -164,13 +195,9 @@ object ValidadorPerfil {
         carrera: String,
         semestre: String
     ): Errores {
-        val errorNombre = Validadores.requerido(nombre, "Nombre")
-            ?: Validadores.soloLetras(nombre, "El nombre")
-            ?: Validadores.longitudMinima(nombre, 3, "El nombre")
-
         return Errores(
-            nombre = errorNombre,
-            email = Validadores.email(email),
+            nombre = Validadores.nombreCompleto(nombre),
+            email = Validadores.emailInstitucional(email),
             carrera = Validadores.requerido(carrera, "Carrera"),
             semestre = Validadores.semestre(semestre)
         )
