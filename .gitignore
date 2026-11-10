@@ -9,3 +9,10 @@
 .cxx
 local.properties
 app/build/
+.mimocode/
+
+# Defensivo: nunca commitear credenciales ni configuracion sensible
+*.keystore
+*.jks
+google-services.json
+.env
